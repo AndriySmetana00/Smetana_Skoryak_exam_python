@@ -1,3 +1,7 @@
+
+from random import choice
+from random import randint
+
 # Гра Монополія
 print("Вас вітає гра 'Монополія' !!! Введіть імена гравців (2 гравці): ")
 # user_1 = input("Перший гравець: ")
@@ -13,6 +17,44 @@ main_game_options = ['Start', 'Territory', 'Lviv', 'Kyiv', 'Odessa', '*?Surprise
 
 # Глобальна змінна History, в якій записуватиметься історія ходів
 history = ''
+
+# штраф
+fines = [200, 500, 1000] 
+
+# карточки  -  ШАНС
+chance = ['move two spaces forward', 'move back one space', 'prize +1000', 'fine -500'] 
+
+# Глобальна змінна History, в якій записуватиметься історія ходів
+history = ''
+
+
+class Prison:
+    def __init__(self):
+        self.random_num_cube = randint(1, 6)
+        
+    def check_data_choice(self):
+        if main_game_options[self.random_num_cube] != '*#Prison#*':
+                print(f'You on: {main_game_options[self.random_num_cube]}')
+        else:
+            print(f'You on: {main_game_options[self.random_num_cube]}\n\tYour fine = {choice(fines)}')
+
+
+class Surprise(Prison):
+    def __init__(self):
+         super().__init__()
+        
+    def check_data_choice(self):
+        if main_game_options[self.random_num_cube] != '*?Surprise?*':
+                print(f'You on: {main_game_options[self.random_num_cube]}')
+        else:
+            print(f'You on: {main_game_options[self.random_num_cube]}\n\tYour chance = {choice(chance)}')
+
+
+lst_prison_surprise = [Prison(), Surprise()]
+for data in lst_prison_surprise:
+    data.check_data_choice()
+
+
 
 
 class Territory:
