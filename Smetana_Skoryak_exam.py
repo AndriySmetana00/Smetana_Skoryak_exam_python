@@ -143,7 +143,7 @@ lviv.real_estate['ЖК AUROOM SOLAR'] = 370
 lviv.real_estate['ЖК Avalon Holiday'] = 350
 lviv.real_estate['ЖК Вікінг Парк'] = 375
 
-print(lviv)
+#print(lviv)
 
 
 class Kyiv(City):
@@ -191,8 +191,8 @@ kyiv.real_estate['ЖК Illinsky House'] = 470
 kyiv.real_estate['ЖК Метрополіс'] = 310
 kyiv.real_estate['ЖК 4 сезони'] = 270
 
-print('\n')
-print(kyiv)
+#print('\n')
+#print(kyiv)
 
 
 class Odessa(City):
@@ -240,5 +240,36 @@ odessa.real_estate['ЖК Modern'] = 330
 odessa.real_estate['ЖК Приморські Сади'] = 240
 odessa.real_estate['ЖК Сьоме Небо'] = 260
 
-print('\n')
-print(odessa)
+#print('\n')
+#print(odessa)
+
+
+# Також потрібен клас BankAccount, де будуть зберігатись гроші гравців
+# Тут реалізовано методи для зняття та нарахування коштів
+
+class BankAccount:
+    def __init__(self, money):
+        self.money = money
+
+    def withdraw_money(self, suma):
+        if not self.valid_money(self.money, suma):
+            return 'You do not have enough money for this operation'
+
+        self.money -= suma
+
+    def add_money(self, suma):
+        self.money += suma
+
+    def __str__(self):
+        return f'Money = {self.money}'
+
+    # Валідатор, щоб можна було знімати кошти лише тоді, коли сума для зняття не перевищує суму на рахунку
+    @classmethod
+    def valid_money(cls, money, suma):
+        if money < suma:
+            return False
+        return True
+
+
+user1_bank = BankAccount(5000)
+user2_bank = BankAccount(5000)
