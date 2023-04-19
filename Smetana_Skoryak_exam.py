@@ -1,19 +1,21 @@
-
 from random import choice
 from random import randint
 
 # Гра Монополія
 print("Вас вітає гра 'Монополія' !!! Введіть імена гравців (2 гравці): ")
-# user_1 = input("Перший гравець: ")
-# user_2 = input("Другий гравець: ")
+player_1_name = input("Перший гравець: ")
+player_2_name = input("Другий гравець: ")
 print()
-# steps_1 = 0
-# steps_2 = 0
+print(player_1_name)
+print(player_2_name)
+steps_1 = 0
+steps_2 = 0
 
 # Опції, які випадають користувачу під час ходу, залежно від того,
-# яке число випаде на кубику, '$Stocks$' - можливість купити акції
-main_game_options = ['Start', 'Territory', 'Lviv', 'Kyiv', 'Odessa', '*?Surprise?*',
-                     '*#Prison#*', '$Stocks$']
+# яке число випаде на кубику, '$$$' - можливість купити акції
+main_game_options = ['STR', 'TER', 'LVI', 'KYV', 'ODS', '*?*',
+                     '*#*', '$$$']
+print(*main_game_options)
 
 # Глобальна змінна History, в якій записуватиметься історія ходів
 history = ''
@@ -23,9 +25,6 @@ fines = [200, 500, 1000]
 
 # карточки  -  ШАНС
 chance = ['move two spaces forward', 'move back one space', 'prize +1000', 'fine -500'] 
-
-# Глобальна змінна History, в якій записуватиметься історія ходів
-history = ''
 
 
 class Prison:
@@ -53,8 +52,6 @@ class Surprise(Prison):
 lst_prison_surprise = [Prison(), Surprise()]
 for data in lst_prison_surprise:
     data.check_data_choice()
-
-
 
 
 class Territory:
@@ -114,7 +111,7 @@ terra.set_land('10 соток', 25)
 
 
 # Дескрипротр для класу City, в якому можна видаляти , отримувати чи присвоювати значення
-# певного параметру
+# певного параметру. Також цей дескриптор використовується і в класі Stocks(див. нижче)
 class CityDescriptor:
 
     def __set_name__(self, owner, var):
@@ -287,7 +284,7 @@ odessa.real_estate['ЖК Сьоме Небо'] = 260
 
 
 # Також потрібен клас BankAccount, де будуть зберігатись гроші гравців
-# Тут реалізовано методи для зняття та нарахування коштів
+# та реалізовано методи для зняття та нарахування коштів
 
 class BankAccount:
     def __init__(self, money):
@@ -313,5 +310,61 @@ class BankAccount:
         return True
 
 
-user1_bank = BankAccount(5000)
-user2_bank = BankAccount(5000)
+player1_bank = BankAccount(5000)
+player2_bank = BankAccount(5000)
+
+# Клас Stocks, де гравець може придбати акції тої чи іншої компанії
+
+
+class Stocks:
+    companies = CityDescriptor()
+
+    def __init__(self, companies):
+        self.companies = companies
+
+    def __str__(self):
+        return f'Available stocks of different companies:\n{self.companies}'
+
+
+stocks = Stocks({})
+stocks.companies['Tesla'] = 500
+stocks.companies['Space X'] = 600
+stocks.companies['Google'] = 700
+stocks.companies['Microsoft'] = 750
+stocks.companies['Apple'] = 800
+stocks.companies['Thermotransit'] = 400
+
+print(stocks)
+
+
+while True:
+    print(f'{player_1_name} кидає гральний кубик...')
+    probils_1 = ''
+    rand1 = randint(1, 6)
+    steps_1 += rand1
+    print(f'Випало {rand1} очок')
+    print(f'{player_2_name} кидає гральний кубик...')
+    probils_2 = ''
+    rand2 = randint(1, 6)
+    steps_2 += rand2
+    print(f'Випало {rand2} очок')
+    if steps_1 % 8 == 0:
+        player1_bank.add_money(400)
+        print(f'Вітаємо, гравець {player_1_name}!\nВи пройшли повне коло і потрапили рівно на клітинку STR!\n'
+              f'За це вам буде нараховано 400 одиниць валюти на ваш банківський рахунок')
+
+    if steps_2 % 8 == 0:
+        player2_bank.add_money(400)
+        print(f'Вітаємо, гравець {player_2_name}!\nВи пройшли повне коло і потрапили рівно на клітинку STR!\n'
+              f'За це вам буде нараховано 400 одиниць валюти на ваш банківський рахунок')
+    steps_1 -= 8 if steps_1 >= 8 else 0
+    steps_2 -= 8 if steps_2 >= 8 else 0
+    probils_1 += steps_1 * '    '
+    probils_2 += steps_2 * '    '
+    print(probils_1 + player_1_name)
+    print(probils_2 + player_2_name)
+    print(*main_game_options)
+
+    contin = input("Do you want to continue or stop?: ")
+    if contin == 'stop':
+        break
