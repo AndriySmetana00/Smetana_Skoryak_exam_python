@@ -308,7 +308,7 @@ stocks.companies['Thermotransit'] = 400
 # print(stocks)
 
 
-def game_func(index, bank):
+def game_func(index, bank, name):
     global history
     if main_game_options[index] == 'LVI':
         print(lviv)
@@ -323,25 +323,25 @@ def game_func(index, bank):
             if choice == 1:
                 choice_2 = input('Введіть назву вулиці, яку хочете придбати: ')
                 if choice_2 in lviv.streets:
-                    history += f'\nПридбано вулицю {choice_2} ціною {lviv.streets[choice_2]} у місті Львів'
+                    history += f'\nПридбано вулицю {choice_2} гравцем {name} ціною {lviv.streets[choice_2]} у місті Львів'
                     bank.withdraw_money(lviv.streets[choice_2])
                     del lviv.streets[choice_2]
             elif choice == 2:
                 choice_2 = input('Введіть назву нерухомості, яку хочете придбати: ')
                 if choice_2 in lviv.real_estate:
-                    history += f'\nПридбано нерухомість {choice_2} ціною {lviv.real_estate[choice_2]} у місті Львів'
+                    history += f'\nПридбано нерухомість {choice_2} гравцем {name} ціною {lviv.real_estate[choice_2]} у місті Львів'
                     bank.withdraw_money(lviv.real_estate[choice_2])
                     del lviv.real_estate[choice_2]
             elif choice == 3:
                 choice_2 = input('Введіть назву автостоянки, яку хочете придбати: ')
                 if choice_2 in lviv.parking_areas:
-                    history += f'\nПридбано автостоянку {choice_2} ціною {lviv.parking_areas[choice_2]} у місті Львів'
+                    history += f'\nПридбано автостоянку {choice_2} гравцем {name} ціною {lviv.parking_areas[choice_2]} у місті Львів'
                     bank.withdraw_money(lviv.parking_areas[choice_2])
                     del lviv.parking_areas[choice_2]
             else:
                 choice_2 = input('Введіть назву кавярні, яку хочете придбати: ')
                 if choice_2 in lviv.coffee_shops:
-                    history += f'\nПридбано кавярню {choice_2} ціною {lviv.coffee_shops[choice_2]} у місті Львів'
+                    history += f'\nПридбано кавярню {choice_2} гравцем {name} ціною {lviv.coffee_shops[choice_2]} у місті Львів'
                     bank.withdraw_money(lviv.coffee_shops[choice_2])
                     del lviv.coffee_shops[choice_2]
     elif main_game_options[index] == 'KYV':
@@ -357,30 +357,30 @@ def game_func(index, bank):
             if choice == 1:
                 choice_2 = input('Введіть назву вулиці, яку хочете придбати: ')
                 if choice_2 in kyiv.streets:
-                    history += f'\nПридбано вулицю {choice_2} ціною {kyiv.streets[choice_2]} у місті Київ'
+                    history += f'\nПридбано вулицю {choice_2} гравцем {name} ціною {kyiv.streets[choice_2]} у місті Київ'
                     bank.withdraw_money(kyiv.streets[choice_2])
                     del kyiv.streets[choice_2]
             elif choice == 2:
                 choice_2 = input('Введіть назву нерухомості, яку хочете придбати: ')
                 if choice_2 in kyiv.real_estate:
-                    history += f'\nПридбано нерухомість {choice_2} ціною {kyiv.real_estate[choice_2]} у місті Київ'
+                    history += f'\nПридбано нерухомість {choice_2} гравцем {name} ціною {kyiv.real_estate[choice_2]} у місті Київ'
                     bank.withdraw_money(kyiv.real_estate[choice_2])
                     del kyiv.real_estate[choice_2]
             elif choice == 3:
                 choice_2 = input('Введіть назву автостоянки, яку хочете придбати: ')
                 if choice_2 in kyiv.parking_areas:
-                    history += f'\nПридбано автостоянку {choice_2} ціною {kyiv.parking_areas[choice_2]} у місті Київ'
+                    history += f'\nПридбано автостоянку {choice_2} гравцем {name} ціною {kyiv.parking_areas[choice_2]} у місті Київ'
                     bank.withdraw_money(kyiv.parking_areas[choice_2])
                     del kyiv.parking_areas[choice_2]
             else:
                 choice_2 = input('Введіть назву ресторану, який хочете придбати: ')
                 if choice_2 in kyiv.restaurants:
-                    history += f'\nПридбано ресторан {choice_2} ціною {kyiv.restaurants[choice_2]} у місті Київ'
+                    history += f'\nПридбано ресторан {choice_2} гравцем {name} ціною {kyiv.restaurants[choice_2]} у місті Київ'
                     bank.withdraw_money(kyiv.restaurants[choice_2])
                     del kyiv.restaurants[choice_2]
     elif main_game_options[index] == 'ODS':
         print(odessa)
-        print('Виберіть операцію для міста Київ:\n'
+        print('Виберіть операцію для міста Одеса:\n'
               '1 - купити вулицю\n'
               '2 - купити нерухомість\n'
               '3 - купити автостоянку\n'
@@ -391,25 +391,25 @@ def game_func(index, bank):
             if choice == 1:
                 choice_2 = input('Введіть назву вулиці, яку хочете придбати: ')
                 if choice_2 in odessa.streets:
-                    history += f'\nПридбано вулицю {choice_2} ціною {odessa.streets[choice_2]} у місті Одеса'
+                    history += f'\nПридбано вулицю {choice_2} гравцем {name} ціною {odessa.streets[choice_2]} у місті Одеса'
                     bank.withdraw_money(odessa.streets[choice_2])
                     del odessa.streets[choice_2]
             elif choice == 2:
                 choice_2 = input('Введіть назву нерухомості, яку хочете придбати: ')
                 if choice_2 in odessa.real_estate:
-                    history += f'\nПридбано нерухомість {choice_2} ціною {odessa.real_estate[choice_2]} у місті Одеса'
+                    history += f'\nПридбано нерухомість {choice_2} гравцем {name} ціною {odessa.real_estate[choice_2]} у місті Одеса'
                     bank.withdraw_money(odessa.real_estate[choice_2])
                     del odessa.real_estate[choice_2]
             elif choice == 3:
                 choice_2 = input('Введіть назву автостоянки, яку хочете придбати: ')
                 if choice_2 in odessa.parking_areas:
-                    history += f'\nПридбано нерухомість {choice_2} ціною {odessa.parking_areas[choice_2]} у місті Одеса'
+                    history += f'\nПридбано нерухомість {choice_2} гравцем {name} ціною {odessa.parking_areas[choice_2]} у місті Одеса'
                     bank.withdraw_money(odessa.parking_areas[choice_2])
                     del odessa.parking_areas[choice_2]
             else:
                 choice_2 = input('Введіть назву бази відпочинку, яку хочете придбати: ')
                 if choice_2 in odessa.camp_bases:
-                    history += f'\nПридбано базу відпочинку {choice_2} ціною {odessa.camp_bases[choice_2]} у місті Одеса'
+                    history += f'\nПридбано базу відпочинку {choice_2} гравцем {name} ціною {odessa.camp_bases[choice_2]} у місті Одеса'
                     bank.withdraw_money(odessa.camp_bases[choice_2])
                     del odessa.camp_bases[choice_2]
     elif main_game_options[index] == 'TER':
@@ -423,13 +423,13 @@ def game_func(index, bank):
             if choice == 1:
                 choice_2 = input("Введіть назву заводу, який хочете придбати: ")
                 if choice_2 in terra.factories:
-                    history += f'\nПридбано завод {choice_2} ціною {terra.get_factory_price(choice_2)}'
+                    history += f'\nПридбано завод {choice_2} гравцем {name} ціною {terra.get_factory_price(choice_2)}'
                     bank.withdraw_money(terra.get_factory_price(choice_2))
                     terra.delete_factory(choice_2)
             elif choice == 2:
                 choice_2 = input("Введіть назву земельної ділянки, який хочете придбати: ")
                 if choice_2 in terra.lands:
-                    history += f'\nПридбано емельну ділянку {choice_2} ціною {terra.get_land_price(choice_2)}'
+                    history += f'\nПридбано емельну ділянку {choice_2} гравцем {name} ціною {terra.get_land_price(choice_2)}'
                     bank.withdraw_money(terra.get_land_price(choice_2))
                     terra.delete_land(choice_2)
     elif main_game_options[index] == '$$$':
@@ -437,27 +437,27 @@ def game_func(index, bank):
         print('Виберіть акції для покупки:\n')
         choice = input()
         if choice in stocks.companies:
-            history += f'\nПридбано акції компанії {choice} ціною {stocks.companies[choice]} '
+            history += f'\nПридбано акції компанії {choice} гравцем {name} ціною {stocks.companies[choice]} '
             bank.withdraw_money(stocks.companies[choice])
             del stocks.companies[choice]
     elif main_game_options[index] == '*?*':
         surprise = Surprise()
         surp_res = surprise.get_chance()
         if surp_res > 0:
-            print(f'Вітаю, вам пощастило!\n'
+            print(f'Вітаю {name}, вам пощастило!\n'
                   f'Ви щойно виграли {surp_res}!')
-            history += f'\nВітаю, вам пощастило!\n' \
+            history += f'\nВітаю {name}, вам пощастило!\n' \
                        f'Ви щойно виграли {surp_res}!'
             bank.add_money(surp_res)
         else:
-            print(f'\nНа жаль, вам не пощастило(((\n'
+            print(f'\nНа жаль {name}, вам не пощастило(((\n'
                   f'Ви щойно отримали штраф у розмірі {surp_res}!')
-            history += f'\nНа жаль, вам не пощастило(((\n' \
+            history += f'\nНа жаль {name}, вам не пощастило(((\n' \
                        f'Ви щойно отримали штраф у розмірі {surp_res}!'
             bank.add_money(surp_res)
     elif main_game_options[index] == '*#*':
-        print(f'\nВи потрапили до тюрми, тож протягом даного ходу не зможете робити ніяких покупок')
-        history += f'\nВи потрапили до тюрми, тож протягом даного ходу не зможете робити ніяких покупок'
+        print(f'\n{name}, ви потрапили до тюрми, тож протягом даного ходу не зможете робити ніяких покупок')
+        history += f'\n{name}, ви потрапили до тюрми, тож протягом даного ходу не зможете робити ніяких покупок'
 
 
 def who_win():
@@ -521,10 +521,10 @@ while True:
     print(probils_2 + player_2_name)
     print(*main_game_options)
     print(f'\nГравець {player_1_name}, ваші дії:\n')
-    game_func(steps_1, player1_bank)
+    game_func(steps_1, player1_bank, player_1_name)
 
     print(f'\nГравець {player_2_name}, ваші дії:\n')
-    game_func(steps_2, player2_bank)
+    game_func(steps_2, player2_bank, player_2_name)
 
     print('\n')
     print(f'Баланс гравця {player_1_name} = {player1_bank.money}')
