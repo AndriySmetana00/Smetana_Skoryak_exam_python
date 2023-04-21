@@ -1,3 +1,4 @@
+import time
 from random import choice
 from random import randint
 
@@ -20,38 +21,17 @@ print(*main_game_options)
 # Глобальна змінна History, в якій записуватиметься історія ходів
 history = ''
 
-# штраф
-fines = [200, 500, 1000] 
-
-# карточки  -  ШАНС
-chance = ['move two spaces forward', 'move back one space', 'prize +1000', 'fine -500'] 
+# Список для класу сюрприз - може випасти як бонусні гроші, так і штраф
+surp_lst = [500, 1000, 2000, -1500, -750, -1200]
 
 
-class Prison:
+class Surprise:
+
     def __init__(self):
-        self.random_num_cube = randint(1, 6)
-        
-    def check_data_choice(self):
-        if main_game_options[self.random_num_cube] != '*#Prison#*':
-                print(f'You on: {main_game_options[self.random_num_cube]}')
-        else:
-            print(f'You on: {main_game_options[self.random_num_cube]}\n\tYour fine = {choice(fines)}')
+        self.chance = choice(surp_lst)
 
-
-class Surprise(Prison):
-    def __init__(self):
-         super().__init__()
-        
-    def check_data_choice(self):
-        if main_game_options[self.random_num_cube] != '*?Surprise?*':
-                print(f'You on: {main_game_options[self.random_num_cube]}')
-        else:
-            print(f'You on: {main_game_options[self.random_num_cube]}\n\tYour chance = {choice(chance)}')
-
-
-lst_prison_surprise = [Prison(), Surprise()]
-for data in lst_prison_surprise:
-    data.check_data_choice()
+    def get_chance(self):
+        return self.chance
 
 
 class Territory:
@@ -64,11 +44,11 @@ class Territory:
 
     def get_factory_price(self, factory):
         self.validation(factory, self.factories)
-        return f'Price of factory {factory} is {self.factories.get(factory)}'
+        return self.factories.get(factory)
 
     def get_land_price(self, land):
         self.validation(land, self.lands)
-        return f'This land {land} costs {self.lands.get(land)}'
+        return self.lands.get(land)
 
     def set_factory(self, name_of_factory, price):
         self.factories[name_of_factory] = price
@@ -80,7 +60,7 @@ class Territory:
 
     @classmethod
     def validation(cls, key, dictionary):
-        if key not in dictionary:
+        if key not in dictionary.keys():
             raise KeyError('Wrong key!')
 
     def delete_factory(self, factory):
@@ -182,7 +162,7 @@ lviv.real_estate['ЖК AUROOM SOLAR'] = 370
 lviv.real_estate['ЖК Avalon Holiday'] = 350
 lviv.real_estate['ЖК Вікінг Парк'] = 375
 
-#print(lviv)
+# print(lviv)
 
 
 class Kyiv(City):
@@ -217,7 +197,7 @@ kyiv.parking_areas['Паркінг біля метро "Вокзальна"'] = 
 
 kyiv.streets['Хрещатик'] = 250
 kyiv.streets['Борщагівська'] = 170
-kyiv.streets['Андріївський узвів'] = 200
+kyiv.streets['Андріївський узвіз'] = 200
 kyiv.streets['Труханівська вулиця'] = 180
 kyiv.streets['вулиця Петра Сагайдачного'] = 185
 kyiv.streets['вулиця Металістів'] = 130
@@ -230,8 +210,8 @@ kyiv.real_estate['ЖК Illinsky House'] = 470
 kyiv.real_estate['ЖК Метрополіс'] = 310
 kyiv.real_estate['ЖК 4 сезони'] = 270
 
-#print('\n')
-#print(kyiv)
+# print('\n')
+# print(kyiv)
 
 
 class Odessa(City):
@@ -279,21 +259,18 @@ odessa.real_estate['ЖК Modern'] = 330
 odessa.real_estate['ЖК Приморські Сади'] = 240
 odessa.real_estate['ЖК Сьоме Небо'] = 260
 
-#print('\n')
-#print(odessa)
+# print('\n')
+# print(odessa)
 
 
 # Також потрібен клас BankAccount, де будуть зберігатись гроші гравців
 # та реалізовано методи для зняття та нарахування коштів
 
 class BankAccount:
-    def __init__(self, money):
+    def __init__(self, money: int):
         self.money = money
 
     def withdraw_money(self, suma):
-        if not self.valid_money(self.money, suma):
-            return 'You do not have enough money for this operation'
-
         self.money -= suma
 
     def add_money(self, suma):
@@ -301,13 +278,6 @@ class BankAccount:
 
     def __str__(self):
         return f'Money = {self.money}'
-
-    # Валідатор, щоб можна було знімати кошти лише тоді, коли сума для зняття не перевищує суму на рахунку
-    @classmethod
-    def valid_money(cls, money, suma):
-        if money < suma:
-            return False
-        return True
 
 
 player1_bank = BankAccount(5000)
@@ -334,37 +304,243 @@ stocks.companies['Microsoft'] = 750
 stocks.companies['Apple'] = 800
 stocks.companies['Thermotransit'] = 400
 
-print(stocks)
+
+# print(stocks)
+
+
+def game_func(index, bank):
+    global history
+    if main_game_options[index] == 'LVI':
+        print(lviv)
+        print('Виберіть операцію для міста Львів:\n'
+              '1 - купити вулицю\n'
+              '2 - купити нерухомість\n'
+              '3 - купити автостоянку\n'
+              '4 - купити кавярню\n')
+        choice = int(input())
+        lst_choice = [1, 2, 3, 4]
+        if choice in lst_choice:
+            if choice == 1:
+                choice_2 = input('Введіть назву вулиці, яку хочете придбати: ')
+                if choice_2 in lviv.streets:
+                    history += f'\nПридбано вулицю {choice_2} ціною {lviv.streets[choice_2]} у місті Львів'
+                    bank.withdraw_money(lviv.streets[choice_2])
+                    del lviv.streets[choice_2]
+            elif choice == 2:
+                choice_2 = input('Введіть назву нерухомості, яку хочете придбати: ')
+                if choice_2 in lviv.real_estate:
+                    history += f'\nПридбано нерухомість {choice_2} ціною {lviv.real_estate[choice_2]} у місті Львів'
+                    bank.withdraw_money(lviv.real_estate[choice_2])
+                    del lviv.real_estate[choice_2]
+            elif choice == 3:
+                choice_2 = input('Введіть назву автостоянки, яку хочете придбати: ')
+                if choice_2 in lviv.parking_areas:
+                    history += f'\nПридбано автостоянку {choice_2} ціною {lviv.parking_areas[choice_2]} у місті Львів'
+                    bank.withdraw_money(lviv.parking_areas[choice_2])
+                    del lviv.parking_areas[choice_2]
+            else:
+                choice_2 = input('Введіть назву кавярні, яку хочете придбати: ')
+                if choice_2 in lviv.coffee_shops:
+                    history += f'\nПридбано кавярню {choice_2} ціною {lviv.coffee_shops[choice_2]} у місті Львів'
+                    bank.withdraw_money(lviv.coffee_shops[choice_2])
+                    del lviv.coffee_shops[choice_2]
+    elif main_game_options[index] == 'KYV':
+        print(kyiv)
+        print('Виберіть операцію для міста Київ:\n'
+              '1 - купити вулицю\n'
+              '2 - купити нерухомість\n'
+              '3 - купити автостоянку\n'
+              '4 - купити ресторан\n')
+        choice = int(input())
+        lst_choice = [1, 2, 3, 4]
+        if choice in lst_choice:
+            if choice == 1:
+                choice_2 = input('Введіть назву вулиці, яку хочете придбати: ')
+                if choice_2 in kyiv.streets:
+                    history += f'\nПридбано вулицю {choice_2} ціною {kyiv.streets[choice_2]} у місті Київ'
+                    bank.withdraw_money(kyiv.streets[choice_2])
+                    del kyiv.streets[choice_2]
+            elif choice == 2:
+                choice_2 = input('Введіть назву нерухомості, яку хочете придбати: ')
+                if choice_2 in kyiv.real_estate:
+                    history += f'\nПридбано нерухомість {choice_2} ціною {kyiv.real_estate[choice_2]} у місті Київ'
+                    bank.withdraw_money(kyiv.real_estate[choice_2])
+                    del kyiv.real_estate[choice_2]
+            elif choice == 3:
+                choice_2 = input('Введіть назву автостоянки, яку хочете придбати: ')
+                if choice_2 in kyiv.parking_areas:
+                    history += f'\nПридбано автостоянку {choice_2} ціною {kyiv.parking_areas[choice_2]} у місті Київ'
+                    bank.withdraw_money(kyiv.parking_areas[choice_2])
+                    del kyiv.parking_areas[choice_2]
+            else:
+                choice_2 = input('Введіть назву ресторану, який хочете придбати: ')
+                if choice_2 in kyiv.restaurants:
+                    history += f'\nПридбано ресторан {choice_2} ціною {kyiv.restaurants[choice_2]} у місті Київ'
+                    bank.withdraw_money(kyiv.restaurants[choice_2])
+                    del kyiv.restaurants[choice_2]
+    elif main_game_options[index] == 'ODS':
+        print(odessa)
+        print('Виберіть операцію для міста Київ:\n'
+              '1 - купити вулицю\n'
+              '2 - купити нерухомість\n'
+              '3 - купити автостоянку\n'
+              '4 - купити базу відпочинку\n')
+        choice = int(input())
+        lst_choice = [1, 2, 3, 4]
+        if choice in lst_choice:
+            if choice == 1:
+                choice_2 = input('Введіть назву вулиці, яку хочете придбати: ')
+                if choice_2 in odessa.streets:
+                    history += f'\nПридбано вулицю {choice_2} ціною {odessa.streets[choice_2]} у місті Одеса'
+                    bank.withdraw_money(odessa.streets[choice_2])
+                    del odessa.streets[choice_2]
+            elif choice == 2:
+                choice_2 = input('Введіть назву нерухомості, яку хочете придбати: ')
+                if choice_2 in odessa.real_estate:
+                    history += f'\nПридбано нерухомість {choice_2} ціною {odessa.real_estate[choice_2]} у місті Одеса'
+                    bank.withdraw_money(odessa.real_estate[choice_2])
+                    del odessa.real_estate[choice_2]
+            elif choice == 3:
+                choice_2 = input('Введіть назву автостоянки, яку хочете придбати: ')
+                if choice_2 in odessa.parking_areas:
+                    history += f'\nПридбано нерухомість {choice_2} ціною {odessa.parking_areas[choice_2]} у місті Одеса'
+                    bank.withdraw_money(odessa.parking_areas[choice_2])
+                    del odessa.parking_areas[choice_2]
+            else:
+                choice_2 = input('Введіть назву бази відпочинку, яку хочете придбати: ')
+                if choice_2 in odessa.camp_bases:
+                    history += f'\nПридбано базу відпочинку {choice_2} ціною {odessa.camp_bases[choice_2]} у місті Одеса'
+                    bank.withdraw_money(odessa.camp_bases[choice_2])
+                    del odessa.camp_bases[choice_2]
+    elif main_game_options[index] == 'TER':
+        print(terra)
+        print('Виберіть операцію для території:\n'
+              '1 - купити завод\n'
+              '2 - купити земельну ділянку\n')
+        choice = int(input())
+        lst_choice = [1, 2]
+        if choice in lst_choice:
+            if choice == 1:
+                choice_2 = input("Введіть назву заводу, який хочете придбати: ")
+                if choice_2 in terra.factories:
+                    history += f'\nПридбано завод {choice_2} ціною {terra.get_factory_price(choice_2)}'
+                    bank.withdraw_money(terra.get_factory_price(choice_2))
+                    terra.delete_factory(choice_2)
+            elif choice == 2:
+                choice_2 = input("Введіть назву земельної ділянки, який хочете придбати: ")
+                if choice_2 in terra.lands:
+                    history += f'\nПридбано емельну ділянку {choice_2} ціною {terra.get_land_price(choice_2)}'
+                    bank.withdraw_money(terra.get_land_price(choice_2))
+                    terra.delete_land(choice_2)
+    elif main_game_options[index] == '$$$':
+        print(stocks)
+        print('Виберіть акції для покупки:\n')
+        choice = input()
+        if choice in stocks.companies:
+            history += f'\nПридбано акції компанії {choice} ціною {stocks.companies[choice]} '
+            bank.withdraw_money(stocks.companies[choice])
+            del stocks.companies[choice]
+    elif main_game_options[index] == '*?*':
+        surprise = Surprise()
+        surp_res = surprise.get_chance()
+        if surp_res > 0:
+            print(f'Вітаю, вам пощастило!\n'
+                  f'Ви щойно виграли {surp_res}!')
+            history += f'\nВітаю, вам пощастило!\n' \
+                       f'Ви щойно виграли {surp_res}!'
+            bank.add_money(surp_res)
+        else:
+            print(f'\nНа жаль, вам не пощастило(((\n'
+                  f'Ви щойно отримали штраф у розмірі {surp_res}!')
+            history += f'\nНа жаль, вам не пощастило(((\n' \
+                       f'Ви щойно отримали штраф у розмірі {surp_res}!'
+            bank.add_money(surp_res)
+    elif main_game_options[index] == '*#*':
+        print(f'\nВи потрапили до тюрми, тож протягом даного ходу не зможете робити ніяких покупок')
+        history += f'\nВи потрапили до тюрми, тож протягом даного ходу не зможете робити ніяких покупок'
+
+
+def who_win():
+    flag = False
+    if player1_bank.money <= 0:
+        print(f'{player_2_name}, вітаю, ви перемогли!'
+              f'{player_1_name}, на жаль, ви програли(((')
+        flag = True
+    elif player2_bank.money <=0:
+        print(f'{player_1_name}, вітаю, ви перемогли!'
+              f'{player_2_name}, на жаль, ви програли(((')
+        flag = True
+    return flag
+
+
+question = input("\nВи вже грали в цю гру раніше?: ")
+if question == 'yes':
+    with open('Smetana_Skoryak_exam.txt', encoding='utf-8') as file:
+        print('\n')
+        print(file.read())
+        print('\n')
 
 
 while True:
-    print(f'{player_1_name} кидає гральний кубик...')
+    print(f'\n{player_1_name} кидає гральний кубик...')
+    time.sleep(3)
     probils_1 = ''
     rand1 = randint(1, 6)
     steps_1 += rand1
     print(f'Випало {rand1} очок')
-    print(f'{player_2_name} кидає гральний кубик...')
+    time.sleep(1)
+    if steps_1 % 8 == 0:
+        player1_bank.add_money(400)
+        print(f'\nВітаємо, гравець {player_1_name}!\nВи пройшли повне коло і потрапили рівно на клітинку STR!\n'
+              f'За це вам буде нараховано 400 одиниць валюти на ваш банківський рахунок')
+        history += f'\nВітаємо, гравець {player_1_name}!\nВи пройшли повне коло і потрапили рівно на клітинку STR!' \
+                    f'\nЗа це вам буде нараховано 400 одиниць валюти на ваш банківський рахунок'
+
+    steps_1 -= 8 if steps_1 >= 8 else 0
+    probils_1 += steps_1 * '    '
+
+    print(f'\n{player_2_name} кидає гральний кубик...')
+    time.sleep(3)
     probils_2 = ''
     rand2 = randint(1, 6)
     steps_2 += rand2
     print(f'Випало {rand2} очок')
-    if steps_1 % 8 == 0:
-        player1_bank.add_money(400)
-        print(f'Вітаємо, гравець {player_1_name}!\nВи пройшли повне коло і потрапили рівно на клітинку STR!\n'
-              f'За це вам буде нараховано 400 одиниць валюти на ваш банківський рахунок')
+    time.sleep(1)
 
     if steps_2 % 8 == 0:
         player2_bank.add_money(400)
-        print(f'Вітаємо, гравець {player_2_name}!\nВи пройшли повне коло і потрапили рівно на клітинку STR!\n'
-              f'За це вам буде нараховано 400 одиниць валюти на ваш банківський рахунок')
-    steps_1 -= 8 if steps_1 >= 8 else 0
+        print(f'\nВітаємо, гравець {player_2_name}!\nВи пройшли повне коло і потрапили рівно на клітинку STR!\n'
+                f'За це вам буде нараховано 400 одиниць валюти на ваш банківський рахунок')
+        history += f'\nВітаємо, гравець {player_2_name}!\nВи пройшли повне коло і потрапили рівно на клітинку STR!' \
+                    f'\nЗа це вам буде нараховано 400 одиниць валюти на ваш банківський рахунок'
+
     steps_2 -= 8 if steps_2 >= 8 else 0
-    probils_1 += steps_1 * '    '
     probils_2 += steps_2 * '    '
+
     print(probils_1 + player_1_name)
     print(probils_2 + player_2_name)
     print(*main_game_options)
+    print(f'\nГравець {player_1_name}, ваші дії:\n')
+    game_func(steps_1, player1_bank)
+
+    print(f'\nГравець {player_2_name}, ваші дії:\n')
+    game_func(steps_2, player2_bank)
+
+    print('\n')
+    print(f'Баланс гравця {player_1_name} = {player1_bank.money}')
+    print(f'Баланс гравця {player_2_name} = {player2_bank.money}')
+
+    round_result = who_win()
+    if round_result:
+        print('\nІсторія гри:\n')
+        print(history)
+        break
 
     contin = input("Do you want to continue or stop?: ")
     if contin == 'stop':
+        print('\nІсторія гри:\n')
+        print(history)
         break
+
+with open('Smetana_Skoryak_exam.txt', 'w', encoding='utf-8') as file:
+    file.write(history)
